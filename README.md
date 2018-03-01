@@ -7,5 +7,6 @@ $ chmod +x *.sh
 $ ./requirements.sh
 $ ./install-elastic.sh
 $ ./install-cerebro.sh
+$ ./install-redis.sh
 ```
 The scripts asks for IP and port. Additionally the Elasticsearch script will ask for the (absolute) data path and amount of RAM to use.
