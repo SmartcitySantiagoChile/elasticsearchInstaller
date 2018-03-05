@@ -34,11 +34,11 @@ The base behavior of the script creates a user with name **server** and the proj
 
 This script has 5 steps:
 
-    1. Step 1: install dependencies
-    2. Step 2: postgres configuration: create database user and database
-    3. Step 3: project configuration: download server project from github and create python virtual env to run it in isolated mode
-    4. Step 4: apache configuration: install and set apache to link server project to url base /
-    4. Step 5: django rq worker: workers of python rq that execute async tasks to upload files or create download files
+1. Step 1: install dependencies
+2. Step 2: postgres configuration: create database user and database
+3. Step 3: project configuration: download server project from github and create python virtual env to run it in isolated mode
+4. Step 4: apache configuration: install and set apache to link server project to url base /
+5. Step 5: django rq worker: workers of python rq that execute async tasks to upload files or create download files
 
 It is highly recommended to read the script before running it and ALSO EXECUTE IT BY ONE PIECE AT A TIME!. Modify the configuration section on install-server.sh to select which steps you want to run. The recommended way is to deactivate all steps and run them separately.
 
