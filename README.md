@@ -14,23 +14,23 @@ The scripts asks for IP and port. Additionally the Elasticsearch script will ask
 
 # install elasticsearch
 
-Execute ´./install-elastic.sh´. This script installs version 6.0 of elasticsearch, additionally
+Execute `./install-elastic.sh`. This script installs version 6.0 of elasticsearch, additionally
 
 The scripts asks for IP, port and the (absolute) data path and amount of RAM to use.
 
 # install cerebro
 
-Execute ´./install-cerebro.sh´. This script installs version 6.0 of elasticsearch, additionally
+Execute `./install-cerebro.sh`. This script installs version 6.0 of elasticsearch, additionally
 
 The scripts asks for IP and port.
 
 # install redis
 
-Execute ´./install-redis.sh´
+Execute `./install-redis.sh`
 
 # install server
 
-The base behavior of the script creates a user with name **server** and the project will be located in path ´/home/server´
+The base behavior of the script creates a user with name **server** and the project will be located in path `/home/server`
 
 This script has 5 steps:
 
@@ -45,10 +45,10 @@ It is highly recommended to read the script before running it and ALSO EXECUTE I
 # First Access
 
 At the first time there is not users in the system so you can not access to web site, to fix this problem you need to execute the next command
-´´´
+```
 # activate virtual environment
 source myenv/bin/activate
 # create super user
 python manage.py createsuperuser
-´´´
-With this new user you can create others through django admin web page (´<ip>/admin´)
+```
+With this new user you can create others through django admin web page (`<ip>/admin`)
