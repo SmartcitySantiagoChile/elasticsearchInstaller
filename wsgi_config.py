@@ -1,23 +1,30 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import sys
-import os
 
-if len(sys.argv) < 2:
-    pass
-else:
-    pathProject =  sys.argv[1]
-    FILE = open(pathProject + '/server/server/wsgi.py','r')
- 
-    newLine = []
- 
-    for line in FILE:
-         if "sys.path.append" in line:
-               newLine.append('sys.path.append(\'' + pathProject + '/server\')\n')
-         else:
-               newLine.append(line)
 
-    FILE.close()
+def main():
+    if len(sys.argv) < 3:
+        pass
+    else:
+        path_project = sys.argv[1]
+        project_name = sys.argv[2]
+        wsgi_file_path = '{0}/{1}/{1}/wsgi.py'.format(path_project, project_name)
 
-    FILE = open(pathProject + '/server/server/wsgi.py','w')
-    for line in newLine:
-        FILE.write(line)
-    FILE.close()
+        new_lines = []
+
+        with open(wsgi_file_path, 'r') as FILE:
+            for line in FILE:
+                if 'sys.path.append' in line:
+                    new_lines.append('sys.path.append(\'{0}/{1}\')\n'.format(path_project, project_name))
+                else:
+                    new_lines.append(line)
+
+        with open(wsgi_file_path, 'w') as FILE:
+            for line in new_lines:
+                FILE.write(line)
+
+
+if __name__ == '__main__':
+    main()

@@ -8,8 +8,10 @@ if [ -z "$1" ]; then
     exit 
 fi
 
-IP_SERVER=$1
+SERVER_IP=$1
 DATABASE_NAME=${2:="fondefviz"}
+POSTGRES_USER="fondefVizUser"
+POSTGRES_PASS="fondefVizPass"
 
 #####################################################################
 # CONFIGURATION
@@ -23,7 +25,8 @@ django_worker_config=false
 
 USER_NAME="server"
 PROJECT_DEST=/home/"$USER_NAME"
-
+VIRTUAL_ENV_PATH="$PROJECT_DEST"/myenv
+PROJECT_NAME="fondefVizServer"
 
 INSTALLATION_PATH=$(pwd)
 
@@ -55,8 +58,11 @@ if $install_packages; then
 
     apt-get --yes --force-yes install build-essential apache2 git python-setuptools libapache2-mod-wsgi python-dev libpq-dev postgresql postgresql-contrib 
     
-    # easy_install is a python module bundled with setuptools that lets you automatically download, build, install, and manage Python packages.
-    easy_install pip
+    # install pip
+    wget https://bootstrap.pypa.io/get-pip.py
+    python get-pip.py
+    pip install virtualenv
+    rm get-pip.py
 fi
 
 
@@ -69,6 +75,8 @@ if $postgresql_configuration; then
   echo "Postgresql"
   echo ----
   echo ----
+
+  cd "$INSTALLATION_PATH"
 
   CREATE_DATABASE=true
   DATABASE_EXISTS=$(sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -w "$DATABASE_NAME")
@@ -90,19 +98,26 @@ if $postgresql_configuration; then
     # get the version of psql
     PSQL_VERSION=$(psql -V | egrep -o '[0-9]{1,}\.[0-9]{1,}')
     # change config of psql
-    cd "$INSTALLATION_PATH"
     python replace_config_psql.py "$PSQL_VERSION"
     service postgresql restart
 
+    # create user and database
+    POSTGRES_FINAL_FILE=postgresql_config.sql
+    # copy the template
+    cp template_postgresql_config.sql "$POSTGRES_FINAL_FILE"
+    # change parameters
+    sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "$POSTGRES_FINAL_FILE"
+    sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "$POSTGRES_FINAL_FILE"
+    sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "$POSTGRES_FINAL_FILE"
+
     # postgres user has to be owner of the file and folder that contain the file
     CURRENT_OWNER=$(stat -c '%U' .)
-    chown postgres "$INSTALLATION_PATH"/postgresql_config.sql
+    chown postgres "$POSTGRES_FINAL_FILE"
     chown postgres "$INSTALLATION_PATH"
     # create user and database
-    sudo -u postgres psql -f "$INSTALLATION_PATH"/postgresql_config.sql
-    chown "${CURRENT_OWNER}" "$INSTALLATION_PATH"/postgresql_config.sql
+    sudo -u postgres psql -f "$POSTGRES_FINAL_FILE"
+    rm "$POSTGRES_FINAL_FILE"
     chown "${CURRENT_OWNER}" "$INSTALLATION_PATH"
-
   fi
 
   echo ----
@@ -123,62 +138,56 @@ if $project_configuration; then
   echo ----
   echo ----
 
-  echo ""
-  echo --
-  echo "Server directory: "
-  echo --
-  echo ""
-
   # to Documents folder
   if cd $PROJECT_DEST; then
      pwd
   else
-    mkdir -p $PROJECT_DEST
+    mkdir -p "$PROJECT_DEST"
   fi
 
-  # go to project destination path
-  cd $PROJECT_DEST
+  # go to destination project path
+  cd "$PROJECT_DEST"
 
   # clone project from git
-  echo ""
-  echo ----
-  echo "Clone project from gitHub"
-  echo ----
-  echo ""
+  echo "Cloning project from gitHub..."
   git clone https://github.com/SmartcitySantiagoChile/fondefVizServer.git
-  PROJECT_NAME="fondefVizServer"
+
   cd "$PROJECT_NAME"
   git submodule init
   git submodule update
-  cd ..
 
   # configure wsgi
   cd "$INSTALLATION_PATH"
-  python wsgi_config.py "$PROJECT_DEST"
+  python wsgi_config.py "$PROJECT_DEST" "$PROJECT_NAME"
 
   # create secret_key.txt file
-  SECRET_KEY_FILE=$PROJECT_DEST/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/secret_key.txt
+  SECRET_KEY_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/secret_key.txt
   touch $SECRET_KEY_FILE
   echo "putYourSecretKeyHere" > "$SECRET_KEY_FILE"
 
   # create folder used by loggers if not exist
   LOG_DIR="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/logs
   mkdir -p "$LOG_DIR"
-  touch $LOG_DIR/file.log
+  touch "$LOG_DIR"/file.log
   chmod 777 "$LOG_DIR"/file.log
-  touch $LOG_DIR/dbfile.log
+  touch "$LOG_DIR"/dbfile.log
   chmod 777 "$LOG_DIR"/dbfile.log
 
+  # create virtualenv
+  virtualenv "$VIRTUAL_ENV_PATH"
+
+  PYTHON_EXECUTABLE="$VIRTUAL_ENV_PATH"/bin/python
+  PIP_EXECUTABLE="$VIRTUAL_ENV_PATH"/bin/pip
   # install all dependencies of python to the project
   cd "$PROJECT_DEST"/"$PROJECT_NAME"
-  pip install -r requirements.txt
+  "$PIP_EXECUTABLE" install -r requirements.txt
 
   # initialize the database
-  python manage.py makemigrations
-  python manage.py migrate
+  "$PYTHON_EXECUTABLE" manage.py makemigrations
+  "$PYTHON_EXECUTABLE" manage.py migrate
   
   # add fixtures
-  python manage.py loaddata datasource communes daytypes halfhours operators timeperiods
+  "$PYTHON_EXECUTABLE" manage.py loaddata datasource communes daytypes halfhours operators timeperiods
 
   #running test
   coverage run --source='.' manage.py test
@@ -204,29 +213,27 @@ if $apache_configuration; then
   # configure apache 2.4
 
   cd "$INSTALLATION_PATH"
+
   CONFIG_APACHE="fondefviz_server.conf"
 
-  sudo python config_apache.py "$PROJECT_DEST" "$IP_SERVER" "$CONFIG_APACHE"
+  sudo python config_apache.py "$PROJECT_DEST" "$VIRTUAL_ENV_PATH" "$CONFIG_APACHE" "$PROJECT_NAME"
   sudo a2dissite 000-default.conf
   sudo a2ensite "$CONFIG_APACHE"
-  # ssl configuration
-  sudo cp ssl.conf /etc/apache2/mods-available
-  sudo a2enmod ssl
   sudo a2enmod headers 
 
   sudo service apache2 reload
 
   # change the MPM of apache.
   # MPM is the way apache handles the request
-  # using proceses, threads or a bit of both.
+  # using processes, threads or a bit of both.
 
   # this is the default 
   # is though to work whith php
-  # becuase php isn't thread safe.
-  # django works better whith
+  # because php isn't thread safe.
+  # django works better with
   # MPM worker, but set up
   # the number of precess and
-  # threads whith care.
+  # threads with care.
 
   sudo a2dismod mpm_event 
   sudo a2enmod mpm_worker 
@@ -248,8 +255,7 @@ if $apache_configuration; then
   # arg6 MaxRequestWorkers: maximum number of threads
   # arg7 MaxConnectionsPerChild: maximum number of 
   #      requests a server process serves
-  cd "$INSTALLATION_PATH"
-  sudo python apacheSetup.py 1 10 50 30 25 75
+  sudo python apache_setup.py 1 10 50 30 25 75
 
   sudo service apache2 restart
 
@@ -278,12 +284,11 @@ if $django_worker_config; then
   cd "$INSTALLATION_PATH"
 
   # Creates the service unit file and the service script
-  sudo python rqWorkerConfig.py "$PROJECT_DEST/server"
+  sudo python rq_worker_config.py "$PROJECT_DEST/$PROJECT_NAME"
 
   # Makes the service script executable
-  cd "$PROJECT_DEST/server/rqworkers"
+  cd "$PROJECT_DEST/$PROJECT_NAME/rqworkers"
   sudo chmod 775 djangoRqWorkers.sh
-  cd "$INSTALLATION_PATH"
 
   # Enables and restarts the service
   sudo systemctl enable django-worker
