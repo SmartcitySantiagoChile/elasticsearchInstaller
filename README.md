@@ -1,6 +1,7 @@
 # README
-These are scripts to install, configure and run Elasticsearch, Cerebro 0.7.2 (github.com/lmenezes/cerebro) on Ubuntu 16.04.3 LTS as services. The scripts allow these applications to automatically run on bootup.
-Additionally we include installation scripts for redis service and visualization project
+These are scripts to install, configure and run Elasticsearch, Cerebro 0.7.2 (github.com/lmenezes/cerebro) and redis on Ubuntu 16.04.3 LTS as services. The scripts allow these applications to automatically run on bootup.
+
+Additionally we include installation script for visualization project
 
 To run them, execute:<br>
 ```
@@ -11,7 +12,6 @@ $ ./install-cerebro.sh
 $ ./install-redis.sh
 $ ./install-server.sh
 ```
-The scripts asks for IP and port. Additionally the Elasticsearch script will ask for the (absolute) data path and amount of RAM to use.
 
 # install elasticsearch
 
