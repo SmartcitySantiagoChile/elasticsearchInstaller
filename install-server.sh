@@ -3,12 +3,6 @@
 #####################################################################
 # COMMAND LINE INPUT
 #####################################################################
-if [ -z "$1" ]; then
-    echo "No se especifico la ip del servidor"
-    exit 
-fi
-
-SERVER_IP=$1
 DATABASE_NAME=${2:="fondefviz"}
 POSTGRES_USER="fondefVizUser"
 POSTGRES_PASS="fondefVizPass"
@@ -57,7 +51,11 @@ if $install_packages; then
     apt-get upgrade
 
     apt-get --yes --force-yes install build-essential apache2 git python-setuptools libapache2-mod-wsgi python-dev libpq-dev postgresql postgresql-contrib 
-    
+    apt-get --yes --force-yes install nodejs npm
+
+    # install bower
+    npm install -g bower
+
     # install pip
     wget https://bootstrap.pypa.io/get-pip.py
     python get-pip.py
@@ -185,9 +183,16 @@ if $project_configuration; then
   # initialize the database
   "$PYTHON_EXECUTABLE" manage.py makemigrations
   "$PYTHON_EXECUTABLE" manage.py migrate
-  
+
   # add fixtures
   "$PYTHON_EXECUTABLE" manage.py loaddata datasource communes daytypes halfhours operators timeperiods
+
+  # install js libraries
+  bower install
+
+  # collect static
+  "$PYTHON_EXECUTABLE" manage.py collectstatic_js_reverse
+  "$PYTHON_EXECUTABLE" manage.py collectstatic --clear --no-input
 
   #running test
   coverage run --source='.' manage.py test
@@ -308,5 +313,5 @@ cd "$INSTALLATION_PATH"
 echo "Ready, if everything went well you stop here."
 echo "Otherwise run in the project folder python manage.py runserver 0.0.0.0:8080 and try it,"
 echo "See what went wrong."
-echo "Also check if you can acces the database, with "
+echo "Also check if you can access to database, with "
 echo "$ psql ghostinspector --user=inspector (the password is inside the settings.py of the project)."
