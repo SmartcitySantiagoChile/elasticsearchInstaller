@@ -3,7 +3,7 @@
 #####################################################################
 # COMMAND LINE INPUT
 #####################################################################
-DATABASE_NAME=${2:="fondefviz"}
+DATABASE_NAME="fondefviz"
 POSTGRES_USER="fondefVizUser"
 POSTGRES_PASS="fondefVizPass"
 
