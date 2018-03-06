@@ -169,9 +169,9 @@ if $project_configuration; then
   DJANGO_DATABASE_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/database.py
   cp template_database_django_setup.py "$DJANGO_DATABASE_FILE"
   # change parameters
-  sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "DJANGO_DATABASE_FILE"
-  sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "DJANGO_DATABASE_FILE"
-  sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "DJANGO_DATABASE_FILE"
+  sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "$DJANGO_DATABASE_FILE"
+  sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "$DJANGO_DATABASE_FILE"
+  sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "$DJANGO_DATABASE_FILE"
 
   # create folder used by loggers if not exist
   LOG_DIR="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/logs
