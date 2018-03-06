@@ -20,7 +20,7 @@ def update_pg_hba_file(postgresql_version):
                 header_found = False
                 os.system("echo done")
 
-            if line == '''# "local" is for Unix domain socket connections only\n''':
+            if line == '# "local" is for Unix domain socket connections only\n':
                 header_found = True
 
             new_lines.append(line)
@@ -37,5 +37,5 @@ def main():
         update_pg_hba_file(sys.argv[1])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
