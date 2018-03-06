@@ -205,7 +205,7 @@ if $project_configuration; then
   "$PYTHON_EXECUTABLE" manage.py collectstatic --clear --no-input
 
   #running test
-  "$COVERAGE_EXECUTABLE" run --source='.' manage.py test
+  "$COVERAGE_EXECUTABLE" run --omit="rqworkers/dataUploader/*" --source='.' manage.py test
   "$COVERAGE_EXECUTABLE" report --omit="$PROJECT_NAME"/*,"$VIRTUAL_ENV_PATH"/* -m
 
   echo ----
