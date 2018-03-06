@@ -186,6 +186,7 @@ if $project_configuration; then
 
   PYTHON_EXECUTABLE="$VIRTUAL_ENV_PATH"/bin/python
   PIP_EXECUTABLE="$VIRTUAL_ENV_PATH"/bin/pip
+  COVERAGE_EXECUTABLE="$VIRTUAL_ENV_PATH"/bin/coverage
   # install all dependencies of python to the project
   cd "$PROJECT_DEST"/"$PROJECT_NAME"
   "$PIP_EXECUTABLE" install -r requirements.txt
@@ -204,8 +205,8 @@ if $project_configuration; then
   "$PYTHON_EXECUTABLE" manage.py collectstatic --clear --no-input
 
   #running test
-  coverage run --source='.' manage.py test
-  coverage report --omit="$PROJECT_NAME"/* -m
+  "$COVERAGE_EXECUTABLE" run --source='.' manage.py test
+  "$COVERAGE_EXECUTABLE" report --omit="$PROJECT_NAME"/* -m
 
   echo ----
   echo ----
