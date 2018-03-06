@@ -191,7 +191,6 @@ if $project_configuration; then
   "$PIP_EXECUTABLE" install -r requirements.txt
 
   # initialize the database
-  "$PYTHON_EXECUTABLE" manage.py makemigrations
   "$PYTHON_EXECUTABLE" manage.py migrate
 
   # add fixtures
