@@ -30,7 +30,6 @@ def main():
         with open(path, 'w') as CONFIG_FILE:
             for line in new_lines:
                 CONFIG_FILE.write(line)
-                CONFIG_FILE.close()
 
 
 if __name__ == "__main__":
