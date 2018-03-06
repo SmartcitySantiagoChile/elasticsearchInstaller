@@ -206,7 +206,7 @@ if $project_configuration; then
 
   #running test
   "$COVERAGE_EXECUTABLE" run --source='.' manage.py test
-  "$COVERAGE_EXECUTABLE" report --omit="$PROJECT_NAME"/* -m
+  "$COVERAGE_EXECUTABLE" report --omit="$PROJECT_NAME"/*,"$VIRTUAL_ENV_PATH"/* -m
 
   echo ----
   echo ----
