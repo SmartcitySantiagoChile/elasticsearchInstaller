@@ -198,7 +198,7 @@ if $project_configuration; then
   "$PYTHON_EXECUTABLE" manage.py loaddata datasource communes daytypes halfhours operators timeperiods
 
   # install js libraries
-  bower install
+  sudo -u "$USER_NAME" bower install
 
   # collect static
   "$PYTHON_EXECUTABLE" manage.py collectstatic_js_reverse
