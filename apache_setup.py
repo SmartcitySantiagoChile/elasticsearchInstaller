@@ -36,7 +36,7 @@ def main():
         config_file = getConfiguration(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6],
                                        sys.argv[7])
 
-        # Writte the file to destination
+        # It writes the file to destination
         path = '/etc/apache2/mods-available/mpm_worker.conf'
 
         with open(path, 'w') as FILE:
