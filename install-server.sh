@@ -142,7 +142,7 @@ if $project_configuration; then
   if cd $PROJECT_DEST; then
      pwd
   else
-    mkdir -p "$PROJECT_DEST"
+    sudo -u "$USER_NAME" mkdir -p "$PROJECT_DEST"
   fi
 
   # go to destination project path
@@ -150,11 +150,11 @@ if $project_configuration; then
 
   # clone project from git
   echo "Cloning project from gitHub..."
-  git clone https://github.com/SmartcitySantiagoChile/fondefVizServer.git
+  sudo -u "$USER_NAME" git clone https://github.com/SmartcitySantiagoChile/fondefVizServer.git
 
   cd "$PROJECT_NAME"
-  git submodule init
-  git submodule update
+  sudo -u "$USER_NAME" git submodule init
+  sudo -u "$USER_NAME" git submodule update
 
   # configure wsgi
   cd "$INSTALLATION_PATH"
@@ -162,12 +162,12 @@ if $project_configuration; then
 
   # create secret_key.txt file
   SECRET_KEY_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/secret_key.py
-  touch $SECRET_KEY_FILE
+  sudo -u "$USER_NAME" touch $SECRET_KEY_FILE
   echo "SECRET_KEY=\"putYourSecretKeyHere\"" > "$SECRET_KEY_FILE"
 
   # create database file
   DJANGO_DATABASE_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/database.py
-  cp template_database_django_setup.py "$DJANGO_DATABASE_FILE"
+  sudo -u "$USER_NAME" cp template_database_django_setup.py "$DJANGO_DATABASE_FILE"
   # change parameters
   sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "$DJANGO_DATABASE_FILE"
   sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "$DJANGO_DATABASE_FILE"
@@ -175,7 +175,7 @@ if $project_configuration; then
 
   # create folder used by loggers if not exist
   LOG_DIR="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/logs
-  mkdir -p "$LOG_DIR"
+  sudo -u "$USER_NAME" mkdir -p "$LOG_DIR"
   touch "$LOG_DIR"/file.log
   chmod 777 "$LOG_DIR"/file.log
   touch "$LOG_DIR"/dbfile.log
