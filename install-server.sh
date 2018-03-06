@@ -4,8 +4,8 @@
 # COMMAND LINE INPUT
 #####################################################################
 DATABASE_NAME="fondefviz"
-POSTGRES_USER="fondefVizUser"
-POSTGRES_PASS="fondefVizPass"
+POSTGRES_USER="fondefvizuser"
+POSTGRES_PASS="fondefvizpass"
 
 #####################################################################
 # CONFIGURATION
