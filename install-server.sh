@@ -308,12 +308,12 @@ if $django_worker_config; then
   echo ----
   echo ----
 
+
+  echo "Ready, if everything went well you stop here."
+  echo "Otherwise run in the project folder python manage.py runserver 0.0.0.0:8080 and try it,"
+  echo "See what went wrong."
+  echo "Also check if you can access to database, with "
+  echo "$ psql ghostinspector --user=inspector (the password is inside the settings.py of the project)."
 fi
 
 cd "$INSTALLATION_PATH"
-
-echo "Ready, if everything went well you stop here."
-echo "Otherwise run in the project folder python manage.py runserver 0.0.0.0:8080 and try it,"
-echo "See what went wrong."
-echo "Also check if you can access to database, with "
-echo "$ psql ghostinspector --user=inspector (the password is inside the settings.py of the project)."
