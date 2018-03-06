@@ -17,9 +17,9 @@ def update_pg_hba_file(postgresql_version, file_path='/etc/postgresql/{0}/main/p
             if header_found and line != additional_line:
                 # if additional line was added previously, ignore it
                 new_lines.append(additional_line)
-                header_found = False
                 os.system("echo done")
 
+            header_found = False
             if line == '# "local" is for Unix domain socket connections only\n':
                 header_found = True
 

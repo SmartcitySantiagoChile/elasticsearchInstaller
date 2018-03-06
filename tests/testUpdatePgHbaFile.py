@@ -6,7 +6,6 @@ from unittest import TestCase
 from replace_config_psql import update_pg_hba_file
 
 import os
-import mock
 
 
 class TestFileUpdater(TestCase):
@@ -38,6 +37,20 @@ class TestFileUpdater(TestCase):
         meta_content = '# "local" is for Unix domain socket connections only\n{0}\n'
         content = meta_content.format('')
         new_content = meta_content.format('local   all             all                                     md5\n')
+
+        self.create_file(content)
+
+        update_pg_hba_file('', self.file_path)
+
+        self.assertEqual(open(self.file_name).read(), new_content)
+
+        self.delete_file()
+
+    def test_process_file_with_match_but_line_exists(self):
+        meta_content = '# "local" is for Unix domain socket connections only\n{0}\n'
+        additional_line = 'local   all             all                                     md5\n'
+        content = meta_content.format(additional_line)
+        new_content = meta_content.format(additional_line)
 
         self.create_file(content)
 
