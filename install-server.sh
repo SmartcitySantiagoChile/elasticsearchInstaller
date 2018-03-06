@@ -19,8 +19,8 @@ django_worker_config=false
 
 USER_NAME="server"
 PROJECT_DEST=/home/"$USER_NAME"
-VIRTUAL_ENV_PATH="$PROJECT_DEST"/myenv
 PROJECT_NAME="fondefVizServer"
+VIRTUAL_ENV_PATH="$PROJECT_DEST"/"$PROJECT_NAME"/myenv
 
 INSTALLATION_PATH=$(pwd)
 
@@ -164,6 +164,14 @@ if $project_configuration; then
   SECRET_KEY_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/secret_key.txt
   touch $SECRET_KEY_FILE
   echo "putYourSecretKeyHere" > "$SECRET_KEY_FILE"
+
+  # create database file
+  DJANGO_DATABASE_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/database.py
+  cp template_database_django_setup.py "$DJANGO_DATABASE_FILE"
+  # change parameters
+  sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "DJANGO_DATABASE_FILE"
+  sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "DJANGO_DATABASE_FILE"
+  sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "DJANGO_DATABASE_FILE"
 
   # create folder used by loggers if not exist
   LOG_DIR="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/logs
