@@ -158,6 +158,10 @@ if $project_configuration; then
   sudo -u "$USER_NAME" git submodule init
   sudo -u "$USER_NAME" git submodule update
 
+  # choose branch with changes for project
+  cd "$PROJECT_NAME"/dataUploader
+  sudo -u "$USER_NAME" git pull origin adaptation/FondefVizProject
+
   # configure wsgi
   cd "$INSTALLATION_PATH"
   python wsgi_config.py "$PROJECT_DEST" "$PROJECT_NAME"
