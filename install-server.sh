@@ -163,7 +163,7 @@ if $project_configuration; then
 
   # configure subdomain
   DJANGO_SETTING_FILE="$PROJECT_DEST/$PROJECT_NAME/$PROJECT_NAME/settings.py"
-  sed -i -e 's/JS_REVERSE_SCRIPT_PREFIX = ""/JS_REVERSE_SCRIPT_PREFIX = "$SUBDOMAIN"/g' "$DJANGO_SETTING_FILE"
+  sed -i -e 's/JS_REVERSE_SCRIPT_PREFIX = ""/JS_REVERSE_SCRIPT_PREFIX = "'"$SUBDOMAIN"'"/g' "$DJANGO_SETTING_FILE"
 
   # create secret_key.txt file
   SECRET_KEY_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/secret_key.py
