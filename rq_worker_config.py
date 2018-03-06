@@ -20,7 +20,7 @@ WantedBy= apache2.service
 WantedBy= multi-user.target'''.format(server_folder)
 
 
-def get_worker_script(server_folder):
+def get_worker_script(server_folder, python_executable):
     return '''#!/bin/bash
 ########################################################
 # CREATE RQ WORKERS BASED ON CONFIG FILE
@@ -30,14 +30,14 @@ trap 'kill -TERM $(jobs -p); trap - INT;' TERM
 # Read config file and start workers
 while IFS='|' read -r -a line || [[ -n "$line" ]]; do
   for (( i=0; i<"${{line[0]}}"; i++ )) do
-    /usr/bin/python2.7 {0}/manage.py \
+    {1} {0}/manage.py \
     rqworker ${{line[1]}} --worker-class "rqworkers.${{line[2]}}" --queue-class rqworkers.killClass.KillQueue &
     done
 done < {0}/rqworkers/worker_config.txt
 # First wait keeps the process running, waiting the workers to end
 wait
 # Second wait keeps the process running while the workers end gracefully
-wait'''.format(server_folder)
+wait'''.format(server_folder, python_executable)
 
 
 def main():
@@ -45,9 +45,10 @@ def main():
         pass
     else:
         project_path = sys.argv[1]
+        python_executable = sys.argv[2]
         # Create service and script files
         service_str = get_worker_service(project_path)
-        script_str = get_worker_script(project_path)
+        script_str = get_worker_script(project_path, python_executable)
 
         # Necessary paths
         systemd_path = '/etc/systemd/system/django-worker.service'

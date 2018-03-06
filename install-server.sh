@@ -21,6 +21,7 @@ USER_NAME="server"
 PROJECT_DEST=/home/"$USER_NAME"
 PROJECT_NAME="fondefVizServer"
 VIRTUAL_ENV_PATH="$PROJECT_DEST"/"$PROJECT_NAME"/myenv
+PYTHON_EXECUTABLE="$VIRTUAL_ENV_PATH"/bin/python
 SUBDOMAIN="fondefviz"
 
 INSTALLATION_PATH=$(pwd)
@@ -189,7 +190,6 @@ if $project_configuration; then
   # create virtualenv
   virtualenv "$VIRTUAL_ENV_PATH"
 
-  PYTHON_EXECUTABLE="$VIRTUAL_ENV_PATH"/bin/python
   PIP_EXECUTABLE="$VIRTUAL_ENV_PATH"/bin/pip
   COVERAGE_EXECUTABLE="$VIRTUAL_ENV_PATH"/bin/coverage
   # install all dependencies of python to the project
@@ -304,7 +304,7 @@ if $django_worker_config; then
   cd "$INSTALLATION_PATH"
 
   # Creates the service unit file and the service script
-  sudo python rq_worker_config.py "$PROJECT_DEST/$PROJECT_NAME"
+  sudo python rq_worker_config.py "$PROJECT_DEST/$PROJECT_NAME" "$PYTHON_EXECUTABLE"
 
   # Makes the service script executable
   cd "$PROJECT_DEST/$PROJECT_NAME/rqworkers"
