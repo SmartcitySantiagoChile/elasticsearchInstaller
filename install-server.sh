@@ -21,6 +21,7 @@ USER_NAME="server"
 PROJECT_DEST=/home/"$USER_NAME"
 PROJECT_NAME="fondefVizServer"
 VIRTUAL_ENV_PATH="$PROJECT_DEST"/"$PROJECT_NAME"/myenv
+SUBDOMAIN="fondefviz"
 
 INSTALLATION_PATH=$(pwd)
 
@@ -160,6 +161,10 @@ if $project_configuration; then
   cd "$INSTALLATION_PATH"
   python wsgi_config.py "$PROJECT_DEST" "$PROJECT_NAME"
 
+  # configure subdomain
+  DJANGO_SETTING_FILE="$PROJECT_DEST/$PROJECT_NAME/$PROJECT_NAME/settings.py"
+  sed -i -e 's/JS_REVERSE_SCRIPT_PREFIX = ""/JS_REVERSE_SCRIPT_PREFIX = "$SUBDOMAIN"/g' "$DJANGO_SETTING_FILE"
+
   # create secret_key.txt file
   SECRET_KEY_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/secret_key.py
   sudo -u "$USER_NAME" touch $SECRET_KEY_FILE
@@ -231,7 +236,7 @@ if $apache_configuration; then
 
   CONFIG_APACHE="fondefviz_server.conf"
 
-  sudo python config_apache.py "$PROJECT_DEST" "$VIRTUAL_ENV_PATH" "$CONFIG_APACHE" "$PROJECT_NAME"
+  sudo python config_apache.py "$PROJECT_DEST" "$VIRTUAL_ENV_PATH" "$CONFIG_APACHE" "$PROJECT_NAME" "$SUBDOMAIN"
   sudo a2dissite 000-default.conf
   sudo a2ensite "$CONFIG_APACHE"
   sudo a2enmod headers 
