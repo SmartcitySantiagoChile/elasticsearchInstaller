@@ -161,9 +161,9 @@ if $project_configuration; then
   python wsgi_config.py "$PROJECT_DEST" "$PROJECT_NAME"
 
   # create secret_key.txt file
-  SECRET_KEY_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/secret_key.txt
+  SECRET_KEY_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/secret_key.py
   touch $SECRET_KEY_FILE
-  echo "putYourSecretKeyHere" > "$SECRET_KEY_FILE"
+  echo "SECRET_KEY=\"putYourSecretKeyHere\"" > "$SECRET_KEY_FILE"
 
   # create database file
   DJANGO_DATABASE_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/database.py
