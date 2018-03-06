@@ -5,8 +5,8 @@ import sys
 import os
 
 
-def update_pg_hba_file(postgresql_version):
-    path = '/etc/postgresql/{0}/main/pg_hba.conf'.format(postgresql_version)
+def update_pg_hba_file(postgresql_version, file_path='/etc/postgresql/{0}/main/pg_hba.conf'):
+    path = file_path.format(postgresql_version)
     additional_line = 'local   all             all                                     md5\n'
 
     new_lines = []
