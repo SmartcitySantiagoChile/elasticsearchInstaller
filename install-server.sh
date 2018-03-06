@@ -176,9 +176,9 @@ if $project_configuration; then
   # create folder used by loggers if not exist
   LOG_DIR="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/logs
   sudo -u "$USER_NAME" mkdir -p "$LOG_DIR"
-  touch "$LOG_DIR"/file.log
+  sudo -u "$USER_NAME" touch "$LOG_DIR"/file.log
   chmod 777 "$LOG_DIR"/file.log
-  touch "$LOG_DIR"/dbfile.log
+  sudo -u "$USER_NAME" touch "$LOG_DIR"/dbfile.log
   chmod 777 "$LOG_DIR"/dbfile.log
 
   # create virtualenv
