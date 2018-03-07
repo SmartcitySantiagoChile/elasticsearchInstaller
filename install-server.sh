@@ -210,8 +210,8 @@ if $project_configuration; then
   sudo -u "$USER_NAME" bower install
 
   # collect static
-  "$PYTHON_EXECUTABLE" manage.py collectstatic_js_reverse
-  "$PYTHON_EXECUTABLE" manage.py collectstatic --clear --no-input
+  sudo -u "$USER_NAME" "$PYTHON_EXECUTABLE" manage.py collectstatic_js_reverse
+  sudo -u "$USER_NAME" "$PYTHON_EXECUTABLE" manage.py collectstatic --clear --no-input
 
   #running test
   "$COVERAGE_EXECUTABLE" run --omit="rqworkers/dataUploader/*" --source='.' manage.py test
