@@ -212,6 +212,7 @@ if $project_configuration; then
   # collect static
   sudo -u "$USER_NAME" "$PYTHON_EXECUTABLE" manage.py collectstatic_js_reverse
   sudo -u "$USER_NAME" "$PYTHON_EXECUTABLE" manage.py collectstatic --clear --no-input
+  sudo -u "$USER_NAME" "$PYTHON_EXECUTABLE" manage.py createindexs
 
   #running test
   "$COVERAGE_EXECUTABLE" run --omit="rqworkers/dataUploader/*" --source='.' manage.py test
