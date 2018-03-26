@@ -3,11 +3,11 @@
 # Download and install Elasticsearch
 # Check http://www.elasticsearch.org/download/ for latest version and replace wget link
 # Only download the file if it doesn't already exist
-if [ ! -f elasticsearch-6.0.0.deb ]; then
-    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.0.0.deb
+if [ ! -f elasticsearch-6.2.3.deb ]; then
+    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.3.deb
 fi
 # Install deb
-sudo dpkg -i elasticsearch-6.0.0.deb
+sudo dpkg -i elasticsearch-6.2.3.deb
 
 # Set JAVA_HOME (in case it is not automatically set)
 export JAVA_HOME=/usr/lib/jvm/java-8-oracle
@@ -92,7 +92,7 @@ curl http://$IP:$PORT
 #  "cluster_name" : "elasticsearch",
 #  "cluster_uuid" : "zoEkL7aBSZC9t8H0V4LLOg",
 #  "version" : {
-#    "number" : "6.0.0",
+#    "number" : "6.2.3",
 #    "build_hash" : "8f0685b",
 #    "build_date" : "2017-11-10T18:41:22.859Z",
 #    "build_snapshot" : false,
