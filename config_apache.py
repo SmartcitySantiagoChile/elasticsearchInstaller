@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import sys
 
 
-def get_config_http_file(project_path, project_name, virtualenv_path, subdomain):
+def get_config_http_file(project_path, project_name, virtualenv_path, subdomain, download_path):
     return '''<VirtualHost *:80>
         # The ServerName directive sets the request scheme, hostname and port that
         # the server uses to identify itself. This is used when creating
@@ -18,6 +18,10 @@ def get_config_http_file(project_path, project_name, virtualenv_path, subdomain)
         #DocumentRoot /var/www/html
         Alias /static {0}/{1}/static
         <Directory {0}/{1}/static>
+                Require all granted
+        </Directory>
+        Alias /downloads {4}
+        <Directory {4}>
                 Require all granted
         </Directory>
         <Directory {0}/{1}/{1}>
@@ -42,7 +46,7 @@ def get_config_http_file(project_path, project_name, virtualenv_path, subdomain)
         # following line enables the CGI configuration for this host only
         # after it has been globally disabled with "a2disconf".
         #Include conf-available/serve-cgi-bin.conf
-    </VirtualHost>'''.format(project_path, project_name, virtualenv_path, subdomain)
+    </VirtualHost>'''.format(project_path, project_name, virtualenv_path, subdomain, download_path)
 
 
 def main():
@@ -54,7 +58,8 @@ def main():
         apache_config_file_name = sys.argv[3]
         project_name = sys.argv[4]
         subdomain = sys.argv[5]
-        config_file = get_config_http_file(path_to_project, project_name, virtual_env_path, subdomain)
+        download_path = sys.argv[6]
+        config_file = get_config_http_file(path_to_project, project_name, virtual_env_path, subdomain, download_path)
 
         # Writte the file to destination
         sites_available_path = '/etc/apache2/sites-available/'

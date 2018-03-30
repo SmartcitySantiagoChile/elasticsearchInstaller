@@ -26,6 +26,8 @@ EMAIL_HOST_USER=""
 EMAIL_HOST_PASSWORD=""
 SERVER_EMAIL=""
 
+DOWNLOAD_PATH=""
+
 #####################################################################
 # CONFIGURATION
 #####################################################################
@@ -218,6 +220,9 @@ if $project_configuration; then
   sed -i -e 's/EMAIL_HOST_PASSWORD=/EMAIL_HOST_PASSWORD='"$EMAIL_HOST"'/g' "$CONFIGURATION_FILE"
   sed -i -e 's/SERVER_EMAIL=/SERVER_EMAIL='"$SERVER_EMAIL"'/g' "$CONFIGURATION_FILE"
 
+  # configure download files
+  sed -i -e 's/DOWNLOAD_PATH=/DOWNLOAD_PATH='"$DOWNLOAD_PATH"'/g' "$CONFIGURATION_FILE"
+
   # create folder used by loggers if not exist
   LOG_DIR="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/logs
   sudo -u "$USER_NAME" mkdir -p "$LOG_DIR"
@@ -279,7 +284,7 @@ if $apache_configuration; then
 
   CONFIG_APACHE="fondefviz_server.conf"
 
-  sudo python config_apache.py "$PROJECT_DEST" "$VIRTUAL_ENV_PATH" "$CONFIG_APACHE" "$PROJECT_NAME" "$SUBDOMAIN"
+  sudo python config_apache.py "$PROJECT_DEST" "$VIRTUAL_ENV_PATH" "$CONFIG_APACHE" "$PROJECT_NAME" "$SUBDOMAIN" "$DOWNLOAD_PATH"
   sudo a2dissite 000-default.conf
   sudo a2ensite "$CONFIG_APACHE"
   sudo a2enmod headers 
