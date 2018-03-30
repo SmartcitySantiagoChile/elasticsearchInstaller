@@ -6,6 +6,25 @@
 DATABASE_NAME="fondefviz"
 POSTGRES_USER="fondefvizuser"
 POSTGRES_PASS="fondefvizpass"
+DOWNLOADED_FILE_PATH="/es/downloads"
+SUBDOMAIN="fondefviz"
+SECRET_KEY="SD3454562A234F234REF4R43G#$534234G%&#"
+
+ES_HOST="127.0.0.1"
+ES_PORT="9200"
+
+REDIS_HOST="127.0.0.1"
+REDIS_PORT="6379"
+
+# if you can add more than one just add comma between them
+ALLOWED_HOSTS='www.fondef.cl,123.123.13.123'
+
+EMAIL_HOST=""
+EMAIL_PORT=""
+EMAIL_USE_TLS=""
+EMAIL_HOST_USER=""
+EMAIL_HOST_PASSWORD=""
+SERVER_EMAIL=""
 
 #####################################################################
 # CONFIGURATION
@@ -22,7 +41,6 @@ PROJECT_DEST=/home/"$USER_NAME"
 PROJECT_NAME="fondefVizServer"
 VIRTUAL_ENV_PATH="$PROJECT_DEST"/"$PROJECT_NAME"/myenv
 PYTHON_EXECUTABLE="$VIRTUAL_ENV_PATH"/bin/python
-SUBDOMAIN="fondefviz"
 
 INSTALLATION_PATH=$(pwd)
 
@@ -166,22 +184,39 @@ if $project_configuration; then
   cd "$INSTALLATION_PATH"
   python wsgi_config.py "$PROJECT_DEST" "$PROJECT_NAME"
 
+  # create .env file with configurations for production
+  CONFIGURATION_FILE="$PROJECT_DEST/$PROJECT_NAME/.env"
+  cp template_env "$CONFIGURATION_FILE"
+
   # configure subdomain
-  DJANGO_SETTING_FILE="$PROJECT_DEST/$PROJECT_NAME/$PROJECT_NAME/settings.py"
-  sed -i -e 's/JS_REVERSE_SCRIPT_PREFIX = ""/JS_REVERSE_SCRIPT_PREFIX = "/'"$SUBDOMAIN"'"/g' "$DJANGO_SETTING_FILE"
+  sed -i -e 's/JS_REVERSE_SCRIPT_PREFIX =/JS_REVERSE_SCRIPT_PREFIX =/'"$SUBDOMAIN"'/g' "$CONFIGURATION_FILE"
 
-  # create secret_key.txt file
-  SECRET_KEY_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/secret_key.py
-  sudo -u "$USER_NAME" touch $SECRET_KEY_FILE
-  echo "SECRET_KEY=\"putYourSecretKeyHere\"" > "$SECRET_KEY_FILE"
+  # configure secret_key
+  sed -i -e 's/SECRET_KEY=/SECRET_KEY=/'"$SECRET_KEY"'/g' "$CONFIGURATION_FILE"
 
-  # create database file
-  DJANGO_DATABASE_FILE="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/keys/database.py
-  sudo -u "$USER_NAME" cp template_database_django_setup.py "$DJANGO_DATABASE_FILE"
-  # change parameters
-  sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "$DJANGO_DATABASE_FILE"
-  sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "$DJANGO_DATABASE_FILE"
-  sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "$DJANGO_DATABASE_FILE"
+  # configure db params
+  sed -i -e 's/DB_NAME=/DB_NAME='"$DATABASE_NAME"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/DB_USER=/DB_USER='"$POSTGRES_USER"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/DB_PASS=/DB_PASS='"$POSTGRES_PASS"'/g' "$CONFIGURATION_FILE"
+
+  # configure elasticsearch params
+  sed -i -e 's/ELASTICSEARCH_HOST=/ELASTICSEARCH_HOST='"$ES_HOST"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/ELASTICSEARCH_PORT=/ELASTICSEARCH_PORT='"$ES_PORT"'/g' "$CONFIGURATION_FILE"
+
+  # configure redis params
+  sed -i -e 's/REDIS_HOST=/REDIS_HOST='"$REDIS_HOST"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/REDIS_PORT=/REDIS_PORT='"$REDIS_PORT"'/g' "$CONFIGURATION_FILE"
+
+  # configure allowed hosts
+  sed -i -e 's/ALLOWED_HOSTS=/ALLOWED_HOSTS='"$ALLOWED_HOSTS"'/g' "$CONFIGURATION_FILE"
+
+  # configure emails
+  sed -i -e 's/EMAIL_HOST=/EMAIL_HOST='"$EMAIL_HOST"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/EMAIL_PORT=/EMAIL_PORT='"$EMAIL_HOST"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/EMAIL_USE_TLS=/EMAIL_USE_TLS='"$EMAIL_HOST"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/EMAIL_HOST_USER=/EMAIL_HOST_USER='"$EMAIL_HOST"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/EMAIL_HOST_PASSWORD=/EMAIL_HOST_PASSWORD='"$EMAIL_HOST"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/SERVER_EMAIL=/SERVER_EMAIL='"$SERVER_EMAIL"'/g' "$CONFIGURATION_FILE"
 
   # create folder used by loggers if not exist
   LOG_DIR="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/logs
@@ -206,13 +241,16 @@ if $project_configuration; then
   # add fixtures
   "$PYTHON_EXECUTABLE" manage.py loaddata datasource communes daytypes halfhours operators timeperiods
 
+  # activate cron task
+  "$PYTHON_EXECUTABLE" manage.py crontab add
+
   # install js libraries
   sudo -u "$USER_NAME" bower install
 
   # collect static
   sudo -u "$USER_NAME" "$PYTHON_EXECUTABLE" manage.py collectstatic_js_reverse
   sudo -u "$USER_NAME" "$PYTHON_EXECUTABLE" manage.py collectstatic --clear --no-input
-  sudo -u "$USER_NAME" "$PYTHON_EXECUTABLE" manage.py createindexs
+  sudo -u "$USER_NAME" "$PYTHON_EXECUTABLE" manage.py createindexes
 
   #running test
   "$COVERAGE_EXECUTABLE" run --omit="rqworkers/dataUploader/*" --source='.' manage.py test
