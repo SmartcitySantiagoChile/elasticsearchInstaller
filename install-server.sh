@@ -181,7 +181,7 @@ if $project_configuration; then
   sudo -u "$USER_NAME" git submodule update
 
   # choose branch with changes for project
-  cd "$PROJECT_NAME"/dataUploader
+  cd "$PROJECT_NAME"/rqworkers/dataUploader
   sudo -u "$USER_NAME" git pull origin adaptation/FondefVizProject
 
   # configure wsgi
