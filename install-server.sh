@@ -169,6 +169,9 @@ if $project_configuration; then
   # go to destination project path
   cd "$PROJECT_DEST"
 
+  # delete previous project
+  rm -r "$PROJECT_NAME"
+  
   # clone project from git
   echo "Cloning project from gitHub..."
   sudo -u "$USER_NAME" git clone https://github.com/SmartcitySantiagoChile/fondefVizServer.git
