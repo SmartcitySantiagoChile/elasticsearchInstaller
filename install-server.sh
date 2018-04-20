@@ -193,10 +193,10 @@ if $project_configuration; then
   cp template_env "$CONFIGURATION_FILE"
 
   # configure subdomain
-  sed -i -e 's/JS_REVERSE_SCRIPT_PREFIX =/JS_REVERSE_SCRIPT_PREFIX =/'"$SUBDOMAIN"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/URL_PREFIX=/URL_PREFIX ='"$SUBDOMAIN"'/g' "$CONFIGURATION_FILE"
 
   # configure secret_key
-  sed -i -e 's/SECRET_KEY=/SECRET_KEY=/'"$SECRET_KEY"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's/SECRET_KEY=/SECRET_KEY='"$SECRET_KEY"'/g' "$CONFIGURATION_FILE"
 
   # configure db params
   sed -i -e 's/DB_NAME=/DB_NAME='"$DATABASE_NAME"'/g' "$CONFIGURATION_FILE"
@@ -223,7 +223,7 @@ if $project_configuration; then
   sed -i -e 's/SERVER_EMAIL=/SERVER_EMAIL='"$SERVER_EMAIL"'/g' "$CONFIGURATION_FILE"
 
   # configure download files
-  sed -i -e 's/DOWNLOAD_PATH=/DOWNLOAD_PATH='"$DOWNLOAD_PATH"'/g' "$CONFIGURATION_FILE"
+  sed -i -e 's,DOWNLOAD_PATH=,DOWNLOAD_PATH='"$DOWNLOAD_PATH"',g' "$CONFIGURATION_FILE"
 
   # create folder used by loggers if not exist
   LOG_DIR="$PROJECT_DEST"/"$PROJECT_NAME"/"$PROJECT_NAME"/logs
