@@ -78,6 +78,8 @@ if $install_packages; then
     npm install -g bower
     # update bower to latest version
     npm i -g bower
+    
+    ln -s /usr/bin/nodejs /usr/bin/node
 
     # install pip
     wget https://bootstrap.pypa.io/get-pip.py
