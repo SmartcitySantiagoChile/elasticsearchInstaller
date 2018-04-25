@@ -33,6 +33,41 @@ Execute `./install-redis.sh`
 
 The base behavior of the script creates a user with name **server** and the project will be located in path `/home/server`
 
+Before to run the script you have to define next variables inside ```install-server.sh``` file:
+
+```
+# Database connection params
+DATABASE_NAME=""
+POSTGRES_USER=""
+POSTGRES_PASS=""
+# If you want to put the project in www.host.cl/project, you have to define this variable to "project", if the project is hosted in root domaint it has to be empty string
+SUBDOMAIN=""
+# django secret key 
+SECRET_KEY="SD3454562A234F234REF4R43G#$534234G%&#"
+
+# elasticsearch connection params
+ES_HOST="127.0.0.1"
+ES_PORT="9200"
+
+# redis connection params
+REDIS_HOST="127.0.0.1"
+REDIS_PORT="6379"
+
+# A list of strings representing the host/domain names that this Django site can serve
+ALLOWED_HOSTS='www.fondef.cl,123.123.13.123'
+
+# configuration to send email when user ask for data and this data is 
+EMAIL_HOST=""
+EMAIL_PORT=""
+EMAIL_USE_TLS=""
+EMAIL_HOST_USER=""
+EMAIL_HOST_PASSWORD=""
+SERVER_EMAIL=""
+
+# absolute path where system will put zip files to be downloaded by users
+DOWNLOAD_PATH=""
+```
+
 This script has 5 steps:
 
 1. Step 1: install dependencies
