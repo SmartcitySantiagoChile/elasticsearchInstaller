@@ -6,6 +6,8 @@
 ELASTICSEARCH_FILE="elasticsearch-6.4.2.deb"
 if [ ! -f "$ELASTICSEARCH_FILE" ]; then
     wget https://artifacts.elastic.co/downloads/elasticsearch/"$ELASTICSEARCH_FILE"
+    wget https://artifacts.elastic.co/downloads/elasticsearch/"$ELASTICSEARCH_FILE".sha512
+    shasum -a 512 -c "$ELASTICSEARCH_FILE".sha512
 fi
 # Install deb
 sudo dpkg -i "$ELASTICSEARCH_FILE"
