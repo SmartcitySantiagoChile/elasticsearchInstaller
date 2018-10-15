@@ -3,11 +3,12 @@
 # Download and install Elasticsearch
 # Check http://www.elasticsearch.org/download/ for latest version and replace wget link
 # Only download the file if it doesn't already exist
-if [ ! -f elasticsearch-6.2.3.deb ]; then
-    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.3.deb
+ELASTICSEARCH_FILE="elasticsearch-6.4.2.deb"
+if [ ! -f "$ELASTICSEARCH_FILE" ]; then
+    wget https://artifacts.elastic.co/downloads/elasticsearch/"$ELASTICSEARCH_FILE"
 fi
 # Install deb
-sudo dpkg -i elasticsearch-6.2.3.deb
+sudo dpkg -i "$ELASTICSEARCH_FILE"
 
 # Set JAVA_HOME (in case it is not automatically set)
 export JAVA_HOME=/usr/lib/jvm/java-8-oracle
