@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# install dependency
+sudo apt install openjdk-11-jre-headless
+
 # Download and install Elasticsearch
 # Check http://www.elasticsearch.org/download/ for latest version and replace wget link
 # Only download the file if it doesn't already exist
